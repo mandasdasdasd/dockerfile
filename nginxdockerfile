@@ -1,0 +1,4 @@
+FROM  docker.io/nginx:latest 
+WORKDIR /
+RUN apt-get update && apt-get install curl -y && apt-get install vim -y
+RUN nginx -c /etc/nginx/nginx.conf
