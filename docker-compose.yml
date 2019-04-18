@@ -4,12 +4,15 @@ nginx:
      - ./nginx.conf:/etc/nginx/nginx.conf
      - ./vhost:/etc/nginx/conf/vhost
      - ./dist:/dist
-     - ./static:/static
+     #- ./static:/static
     ports:
      - "80:80"
      - "443:443"
     links:
      - flask:flask
+     - mysql:mysql
+     - admin:admin
+
 
 flask:
     image: "flask:latest"
@@ -21,8 +24,23 @@ flask:
      - mysql:mysql
     command: python wsgi.py
 
+
 mysql:
+    volumes:
+     - ./data:/data
     image: "mysql:latest"
     ports:
      - "3306:3306"
     command: /usr/local/mysql/bin/mysqld
+
+
+admin:
+    image: "flask:latest"
+    links:
+     - mysql:mysql
+    volumes:
+     - ./data:/data
+     - /var/www/II-vue/new-vue/static:/static
+     - ../flaskadmin:/flaskadmin
+     - ../run.py:/run.py
+    command: python /run.py
